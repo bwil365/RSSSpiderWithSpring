@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jpa="http://www.springframework.org/schema/data/jpa"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans.xsd
+    http://www.springframework.org/schema/data/jpa
+    http://www.springframework.org/schema/data/jpa/spring-jpa.xsd
+    http://www.springframework.org/schema/context 
+    http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+    <!--<bean id="test_class" name="wiseworm" class="sample.testClass"/>-->
+
+	<context:component-scan base-package="app" />
+
+	<!--  <context:property-placeholder location="classpath:destinations.properties" /> -->
+
+    <jpa:repositories base-package="app.repositories"/>
+
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+        <property name="driverClassName" value="com.mysql.jdbc.Driver"/>
+<!--         <property name="url" value="jdbc:mysql://localhost/timeline"/> -->
+<!--         <property name="url" value="jdbc:mysql://localhost/rsstimeline"/> -->
+		<property name="url" value="jdbc:mysql://localhost/rssspider"/> 
+        <property name="username" value="root"/>
+        <property name="password" value="root"/>
+        <!--<property name="driverClassName" value="org.sqlite.JDBC"/>
+        <property name="url" value="jdbc:sqlite:graphtheory.sqlite3"/>-->
+    </bean>
+
+    <bean id="jpaVendorAdapter" class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter">
+        <property name="showSql" value="true"/>
+        <property name="generateDdl" value="true"/>
+        <property name="database" value="MYSQL"/>
+        <!--<property name="database" value="SQLite"/>-->
+        <!--<property name="databasePlatform" value="org.hibernate.dialect.SQLiteDialect" />-->
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="jpaVendorAdapter" ref="jpaVendorAdapter"/>
+        <!-- spring based scanning for entity classes-->
+        <property name="packagesToScan" value="app.entities"/>
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"/>
+
+
+    <!-- Beans -->
+
+	<bean id="feedService" scope="singleton" class="app.services.FeedService" />
+    <bean id="rssSpider"  scope="prototype"  class="app.spiders.RSSSpider" />
+    
+    
+
+
+</beans>
